@@ -10,6 +10,7 @@
   --link: #2c62d9;
   --accent: #2c62d9;
   --accent-strong: #1a49b3;
+  --speaking-bg: #3a6fd8;
   --success: #1c7f4a;
   --success-bg: #dff2e6;
   --danger: #c63e3e;
@@ -34,6 +35,7 @@
   --link: #7aa2ff;
   --accent: #7aa2ff;
   --accent-strong: #a4bfff;
+  --speaking-bg: #3a5aa0;
   --success: #4fd68b;
   --success-bg: #143b26;
   --danger: #ff7676;
@@ -550,3 +552,50 @@ body { font-size: calc(15px * var(--font-scale)); }
   .tts-sliders { display: none; }
   .voice-picker.compact select { max-width: 120px; }
 }
+
+/* ─── Sentence reader (speech highlighting) ──────────────────────────────── */
+.sentence-reader {
+  padding: 12px 4px;
+  line-height: 1.9;
+  font-size: 1.05em;
+}
+.sentence-reader.manual { cursor: pointer; }
+.sentence {
+  padding: 3px 8px;
+  border-radius: 10px;
+  transition: background-color 140ms ease, color 140ms ease, box-shadow 140ms ease;
+  cursor: pointer;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+.sentence:hover { background: var(--bg-sunken); }
+.sentence.speaking {
+  background: var(--speaking-bg);
+  color: #ffffff;
+  padding: 4px 10px;
+  box-shadow: 0 2px 8px rgba(58, 111, 216, 0.35);
+}
+
+/* README block-level highlight — keeps markdown formatting intact and lights
+   up the paragraph / heading / list containing the currently-spoken sentence. */
+.readme-block {
+  padding: 4px 12px;
+  margin: 0 -12px;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background-color 180ms ease, box-shadow 180ms ease;
+}
+.readme-block:hover:not(.speaking) {
+  background: var(--bg-sunken);
+}
+.readme-block:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+.readme-block.speaking {
+  background: color-mix(in srgb, var(--speaking-bg) 18%, transparent);
+  box-shadow: inset 4px 0 0 var(--speaking-bg), 0 2px 12px rgba(58, 111, 216, 0.18);
+}
+/* Prevent the first/last child of a highlighted block from doubling margins. */
+.readme-block > :first-child { margin-top: 0.4em; }
+.readme-block > :last-child { margin-bottom: 0.4em; }

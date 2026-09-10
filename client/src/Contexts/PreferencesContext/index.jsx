@@ -9,6 +9,7 @@ const DEFAULTS = {
   ttsRate: 1.0,
   ttsPitch: 1.0,
   ttsVolume: 1.0,
+  ttsMode: "auto",
   commentsOnly: {},
   solutionsRevealed: {},
   completedLessons: {},
@@ -60,6 +61,7 @@ export default function PreferencesProvider({ children }) {
       setTTSRate: (ttsRate) => patch({ ttsRate }),
       setTTSPitch: (ttsPitch) => patch({ ttsPitch }),
       setTTSVolume: (ttsVolume) => patch({ ttsVolume }),
+      setTTSMode: (ttsMode) => patch({ ttsMode }),
       setCommentsOnly: (lessonId, value) =>
         patch((s) => ({ commentsOnly: { ...s.commentsOnly, [lessonId]: value } })),
       revealSolution: (lessonId) =>

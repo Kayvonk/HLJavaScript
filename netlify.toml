@@ -1,0 +1,12 @@
+[build]
+  base    = "HLJavaScript"
+  command = "npm --prefix client install && npm run build"
+  publish = "HLJavaScript/client/dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+[[redirects]]
+  from   = "/*"
+  to     = "/index.html"
+  status = 200

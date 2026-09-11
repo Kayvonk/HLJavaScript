@@ -25,9 +25,15 @@ export default function Navbar({ onToggleSidebar, showSidebarToggle }) {
             ☰
           </button>
         )}
-        <NavLink to="/" className="brand">
-          <span className="brand-mark">{"{ }"}</span>
-          <span className="brand-name">High-Level JS</span>
+        <NavLink to="/" className="brand" aria-label="High-Level JavaScript home">
+          <span className="brand-mark" aria-hidden="true">{"{"}</span>
+          <span className="brand-name">
+            <span className="brand-line">
+              <span className="brand-accent">H</span>igh-<span className="brand-accent">L</span>evel
+            </span>
+            <span className="brand-line">JavaScript</span>
+          </span>
+          <span className="brand-mark" aria-hidden="true">{"}"}</span>
         </NavLink>
       </div>
       <ul className="navbar-links">

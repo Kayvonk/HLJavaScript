@@ -31,12 +31,12 @@ export default function CompletionToggle({ lessonId, moduleId, kind = "lesson", 
       className={`completion-toggle size-${size} ${done ? "is-done" : ""}`}
       onClick={toggle}
       aria-pressed={done}
-      aria-label={done ? "Mark incomplete" : `Mark ${kind} complete`}
+      aria-label={done ? "Mark incomplete" : "Mark as complete"}
       title={done && timestamp ? `Completed ${relativeTime(timestamp)}` : undefined}
     >
       <span className="check" aria-hidden="true">{done ? "✓" : ""}</span>
       <span className="label">
-        {done ? `Completed${timestamp ? ` · ${relativeTime(timestamp)}` : ""}` : `Mark ${kind} complete`}
+        {done ? `Completed${timestamp ? ` · ${relativeTime(timestamp)}` : ""}` : "Mark as complete"}
       </span>
     </button>
   );

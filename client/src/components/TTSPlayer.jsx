@@ -87,19 +87,41 @@ export function TTSProvider({ children }) {
 export default function TTSPlayer() {
   const tts = useTTS();
   const prefs = usePreferences();
+  const [expanded, setExpanded] = useState(false);
+  const [settingsOpen, setSettingsOpen] = useState(false);
+
+  // Reset presentational state whenever the player is dismissed so the next
+  // open starts collapsed. Runs before the early return so hook order is stable.
+  useEffect(() => {
+    if (!tts.visible) {
+      setExpanded(false);
+      setSettingsOpen(false);
+    }
+  }, [tts.visible]);
+
   if (!tts.visible) return null;
 
   const manual = prefs.ttsMode === "manual";
+  const playerClass = `tts-player${expanded ? " expanded" : ""}${settingsOpen ? " settings-open" : ""}`;
 
   return (
-    <div className="tts-player" role="region" aria-label="Text to speech player">
+    <div className={playerClass} role="region" aria-label="Text to speech player">
       <div className="tts-player-row">
-        <div className="tts-info">
-          <span className="tts-status" aria-live="polite">
-            {tts.isSpeaking ? (tts.isPaused ? "Paused" : "Speaking") : "Ready"}
+        <button
+          type="button"
+          className="tts-expand-toggle"
+          onClick={() => setExpanded((v) => !v)}
+          aria-expanded={expanded}
+          aria-label={expanded ? "Collapse player" : "Expand player"}
+        >
+          <span className="tts-info">
+            <span className="tts-status" aria-live="polite">
+              {tts.isSpeaking ? (tts.isPaused ? "Paused" : "Speaking") : "Ready"}
+            </span>
+            {tts.label && <span className="tts-label">{tts.label}</span>}
           </span>
-          {tts.label && <span className="tts-label">{tts.label}</span>}
-        </div>
+          <span className="tts-expand-chevron" aria-hidden="true">▾</span>
+        </button>
         <div className="tts-transport">
           {manual && (
             <button
@@ -132,6 +154,16 @@ export default function TTSPlayer() {
           <button className="icon-btn" onClick={tts.stop} aria-label="Stop">
             ⏹
           </button>
+          <button
+            className={`icon-btn tts-settings-btn${settingsOpen ? " active" : ""}`}
+            onClick={() => setSettingsOpen((v) => !v)}
+            aria-expanded={settingsOpen}
+            aria-controls="tts-settings-panel"
+            aria-label={settingsOpen ? "Hide voice settings" : "Show voice settings"}
+            title="Voice settings"
+          >
+            ⚙
+          </button>
         </div>
         <div className="tts-mode segmented" role="group" aria-label="Playback mode">
           <button
@@ -149,9 +181,9 @@ export default function TTSPlayer() {
             Manual
           </button>
         </div>
-        <div className="tts-sliders">
+        <div id="tts-settings-panel" className="tts-settings-panel">
           <label>
-            Rate
+            <span>Rate</span>
             <input
               type="range"
               min="0.5"
@@ -159,11 +191,12 @@ export default function TTSPlayer() {
               step="0.1"
               value={prefs.ttsRate}
               onChange={(e) => prefs.setTTSRate(Number(e.target.value))}
+              aria-label="Speech rate"
             />
             <span>{prefs.ttsRate.toFixed(1)}</span>
           </label>
           <label>
-            Pitch
+            <span>Pitch</span>
             <input
               type="range"
               min="0.5"
@@ -171,11 +204,12 @@ export default function TTSPlayer() {
               step="0.1"
               value={prefs.ttsPitch}
               onChange={(e) => prefs.setTTSPitch(Number(e.target.value))}
+              aria-label="Speech pitch"
             />
             <span>{prefs.ttsPitch.toFixed(1)}</span>
           </label>
           <label>
-            Volume
+            <span>Volume</span>
             <input
               type="range"
               min="0"
@@ -183,6 +217,7 @@ export default function TTSPlayer() {
               step="0.05"
               value={prefs.ttsVolume}
               onChange={(e) => prefs.setTTSVolume(Number(e.target.value))}
+              aria-label="Speech volume"
             />
             <span>{prefs.ttsVolume.toFixed(2)}</span>
           </label>

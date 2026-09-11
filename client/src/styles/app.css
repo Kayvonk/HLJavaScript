@@ -535,9 +535,9 @@ body { font-size: calc(15px * var(--font-scale)); }
 .tts-status { font-size: 0.75em; color: var(--fg-muted); text-transform: uppercase; letter-spacing: 0.5px; }
 .tts-label { font-size: 0.9em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .tts-transport { display: flex; gap: 4px; }
-.tts-sliders { display: flex; gap: 16px; align-items: center; }
-.tts-sliders label { display: flex; align-items: center; gap: 6px; font-size: 0.85em; color: var(--fg-muted); }
-.tts-sliders input[type="range"] { width: 90px; accent-color: var(--accent); }
+.tts-settings-panel { display: flex; gap: 16px; align-items: center; }
+.tts-settings-panel label { display: flex; align-items: center; gap: 6px; font-size: 0.85em; color: var(--fg-muted); }
+.tts-settings-panel input[type="range"] { width: 90px; accent-color: var(--accent); }
 .voice-picker { display: flex; align-items: center; gap: 6px; font-size: 0.85em; }
 .voice-picker.compact select { max-width: 180px; }
 .voice-picker select {
@@ -548,10 +548,20 @@ body { font-size: calc(15px * var(--font-scale)); }
   color: var(--fg);
   font: inherit;
 }
-@media (max-width: 700px) {
-  .tts-sliders { display: none; }
-  .voice-picker.compact select { max-width: 120px; }
+/* Expand toggle: on desktop the info column is not a button visually — display: contents
+   makes the wrapping <button> layout-transparent so the existing flex row is preserved. */
+.tts-expand-toggle {
+  display: contents;
+  background: transparent;
+  border: 0;
+  padding: 0;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
 }
+.tts-expand-chevron { display: none; }
+.tts-settings-btn { display: none; }
 
 /* ─── Sentence reader (speech highlighting) ──────────────────────────────── */
 .sentence-reader {
@@ -568,7 +578,9 @@ body { font-size: calc(15px * var(--font-scale)); }
   -webkit-box-decoration-break: clone;
   box-decoration-break: clone;
 }
-.sentence:hover { background: var(--bg-sunken); }
+@media (hover: hover) {
+  .sentence:hover { background: var(--bg-sunken); }
+}
 .sentence.speaking {
   background: var(--speaking-bg);
   color: #ffffff;
@@ -585,8 +597,10 @@ body { font-size: calc(15px * var(--font-scale)); }
   cursor: pointer;
   transition: background-color 180ms ease, box-shadow 180ms ease;
 }
-.readme-block:hover:not(.speaking) {
-  background: var(--bg-sunken);
+@media (hover: hover) {
+  .readme-block:hover:not(.speaking) {
+    background: var(--bg-sunken);
+  }
 }
 .readme-block:focus-visible {
   outline: 2px solid var(--accent);
@@ -599,3 +613,164 @@ body { font-size: calc(15px * var(--font-scale)); }
 /* Prevent the first/last child of a highlighted block from doubling margins. */
 .readme-block > :first-child { margin-top: 0.4em; }
 .readme-block > :last-child { margin-bottom: 0.4em; }
+
+/* ─── Mobile & tablet-portrait responsivity ─────────────────────────────────
+   Primary breakpoint. Preserves all features (especially TTS controls) while
+   tightening spacing and enlarging touch targets to ≥44px per WCAG 2.5.5. */
+@media (max-width: 768px) {
+  .app-main { padding: 16px 14px 88px; }
+  .page { padding-inline: 4px; }
+
+  .navbar { padding: 8px 12px; gap: 10px; }
+  .hero { margin-bottom: 24px; }
+  .hero h1 { font-size: 1.6em; }
+
+  .icon-btn { width: 40px; height: 40px; }
+  .btn { padding: 10px 16px; min-height: 44px; }
+  .completion-toggle { padding: 10px 16px; min-height: 44px; }
+  .segmented button { padding: 10px 14px; min-height: 44px; }
+
+  .sidebar-module > summary { padding: 10px 12px; min-height: 44px; }
+  .sidebar-lesson { padding: 10px 12px; min-height: 40px; }
+
+  .module-view .module-header,
+  .lesson-view .lesson-header,
+  .solution-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .module-header-actions,
+  .content-actions {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
+  .lesson-nav { flex-wrap: wrap; }
+  .lesson-nav .btn { flex: 1 1 auto; min-width: 140px; }
+
+  .lesson-tabs {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap;
+  }
+  .lesson-tabs::-webkit-scrollbar { display: none; }
+  .lesson-tab {
+    padding: 10px 14px;
+    min-height: 44px;
+    white-space: nowrap;
+  }
+
+  .markdown-code pre,
+  .code-block pre,
+  .code-fallback {
+    padding: 10px 12px;
+    font-size: 0.85em;
+  }
+
+  .readme-block {
+    padding: 10px 12px;
+    margin: 4px 0;
+  }
+  .sentence { padding: 4px 10px; }
+
+  /* ── TTS player: compact-by-default with tap-to-expand ── */
+  .tts-player-row {
+    padding: 8px 10px;
+    gap: 8px;
+    align-items: center;
+    flex-wrap: nowrap;
+  }
+  .tts-info { flex: 1 1 0; min-width: 0; }
+  .tts-status { font-size: 0.7em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  .tts-expand-toggle {
+    display: flex;
+    flex: 1 1 0;
+    min-width: 0;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: var(--radius-sm);
+  }
+  .tts-expand-toggle:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .tts-expand-toggle .tts-info { flex: 1 1 0; min-width: 0; }
+  .tts-expand-chevron {
+    display: inline-block;
+    color: var(--fg-muted);
+    font-size: 0.8em;
+    transition: transform 180ms ease;
+    flex-shrink: 0;
+  }
+  .tts-player.expanded .tts-expand-chevron { transform: rotate(180deg); }
+
+  .tts-settings-btn { display: inline-flex; }
+
+  /* Collapse secondary controls into the expandable region */
+  .tts-mode.segmented,
+  .voice-picker,
+  .tts-settings-panel { display: none; }
+
+  .tts-player.expanded .tts-player-row,
+  .tts-player.settings-open .tts-player-row {
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .tts-player.expanded .tts-mode.segmented {
+    display: inline-flex;
+    order: 10;
+  }
+  .tts-player.expanded .voice-picker {
+    display: flex;
+    order: 11;
+    width: 100%;
+  }
+  .tts-player.expanded .voice-picker.compact select {
+    max-width: none;
+    width: 100%;
+    padding: 10px 12px;
+    min-height: 44px;
+  }
+
+  .tts-player.settings-open .tts-settings-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--border);
+    background: var(--bg-sunken);
+    width: 100%;
+    order: 20;
+    margin: 4px -10px -8px;
+    border-radius: 0;
+  }
+  .tts-settings-panel label {
+    display: grid;
+    grid-template-columns: 60px 1fr 44px;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 0.9em;
+  }
+  .tts-settings-panel input[type="range"] { width: 100%; }
+  .tts-settings-panel label > span:last-child {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    color: var(--fg);
+  }
+}
+
+/* ─── Small phones ──────────────────────────────────────────────────────── */
+@media (max-width: 480px) {
+  .app-main { padding: 12px 10px 80px; }
+  .hero h1 { font-size: 1.4em; }
+  .module-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+  .lesson-row {
+    grid-template-columns: 28px 1fr auto;
+    padding: 10px 12px;
+    gap: 10px;
+  }
+}
